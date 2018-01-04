@@ -1,0 +1,92 @@
+#include <stdio.h>
+#include <iostream>
+
+using namespace std;
+#define MAX_LINE 20
+
+void DFS(int y, int x, int k, int ret, int turn);
+int max(int a, int b);
+
+
+int map[MAX_LINE][MAX_LINE];
+int check_dessert[100];
+int memo[MAX_LINE][MAX_LINE];
+int N;
+int dy[4] = {1,1,-1,-1};
+int dx[4] = {1,-1,-1,1};
+int maxreturn;
+
+int main()
+{	
+	int T;
+	int tcase = 0;
+	cin >> T;
+	while(tcase<T){
+	
+	int max_return = 0;
+	cin >> N;
+
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+			cin >> map[i][j];
+		}
+	}
+
+
+	for (int i = 0; i < 100; i++) check_dessert[i] = 0;
+
+	int maxret = 0;
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < N; j++) {
+			for (int k = 0; k < 4; k++) {
+				int ret = 0;
+				memo[i][j] = 2;
+				check_dessert[map[i][j]] = 1;
+				DFS(i, j, k, ret,0);
+				maxret = max(maxret, ret);
+				memo[i][j] = 0;
+				check_dessert[map[i][j]] = 0;
+			}
+		}
+	}
+	if (maxreturn == 0) maxreturn = -1;
+	else maxreturn = maxreturn + 1;
+	cout <<"#" <<tcase+1<<" " << maxreturn << endl;
+	maxreturn = 0;
+	tcase++;
+	}
+    return 0;
+}
+
+void DFS(int y, int x,int k, int ret, int turn)
+{	
+
+	int cy = y + dy[k];
+	int cx = x + dx[k];
+	if (cy < 0 || cy >= N || cx < 0 || cx >= N || turn >4) {
+		ret = -1;
+		return;
+	}
+	if (check_dessert[map[cy][cx]] == 1) {
+		if (memo[cy][cx] == 2 && ret != -1) {
+			maxreturn = max(maxreturn, ret);
+			return;
+		}
+		ret = -1;
+		return;
+	}
+
+	
+	if (ret != -1) {
+		check_dessert[map[cy][cx]] = 1;
+		DFS(cy, cx, k, ret + 1, turn);
+		DFS(cy, cx, (k + 1)%4, ret + 1, turn +1);
+		check_dessert[map[cy][cx]] = 0;
+	}
+}
+
+int max(int a, int b)
+{
+	if (a > b) return a;
+	else return b;
+}
