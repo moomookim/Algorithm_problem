@@ -1,0 +1,104 @@
+#include <stdio.h>
+#include <iostream>
+
+using namespace std;
+
+#define N_MAX 10
+#define M_MAX 5
+
+int queue[N_MAX*N_MAX];
+int map[N_MAX][N_MAX];
+int chk[N_MAX][N_MAX];
+int worker[M_MAX];
+int N, M, C;
+
+int chkMAX();
+void sort();
+
+int main()
+{
+	int T;
+	int tcase = 0;
+
+	cin >> T;
+
+	while (tcase < T) {
+		cin >> N >> M >> C;
+
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				cin >> map[i][j];
+				chk[i][j] = 0;
+			}
+		}
+
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				if (j + M <= N) {
+				for (int k = 0; k < M; k++) {
+						worker[k] = map[i][j + k];
+					}
+				chk[i][j] = chkMAX();
+				}
+			}
+		}
+
+		int aMAX = 0, bMAX = 0, sumMAX = 0;
+		int ai=0, aj=0, bi=0, bj=0;
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < N; j++) {
+				if (chk[i][j]>=aMAX) {
+					if (ai!=i || aj - j >= M) {
+						bMAX = aMAX;
+						bi = ai; bj = aj;
+						aMAX = chk[i][j];
+						ai = i; aj = j;
+					}
+					else {
+						aMAX = chk[i][j];
+						ai = i; aj = j;
+					}
+				}
+				if (chk[i][j]>=bMAX && chk[i][j] < aMAX && (aj - j >= M || ai != i) && ( bj - j >= M || bi!=i)) {
+					bMAX = chk[i][j];
+				}
+			}
+		}
+
+		cout << "#" << tcase + 1 << " " << aMAX + bMAX << endl;
+		tcase++;
+	}
+    return 0;
+}
+
+int chkMAX()
+{
+	sort();
+	int sumMAX = 0, honeyMAX = 0, ret = 0;
+	for (int i = 0; i < M; i++) {
+		for (int j = i; j < M; j++) {
+			if (sumMAX + worker[j] <= C) {
+				sumMAX = sumMAX + worker[j];
+				honeyMAX = honeyMAX + (worker[j] * worker[j]);
+			}
+		}
+		if (ret < honeyMAX) ret = honeyMAX;
+		worker[i] = 0; sumMAX = 0; honeyMAX = 0;
+	}
+
+	return ret;
+}
+
+void sort() {
+
+	for (int i = 0; i < M-1; i++) {
+		int temp;
+		for (int j = i+1; j < M; j++) {
+			if (worker[i] < worker[j]) {
+				temp = worker[i];
+				worker[i] = worker[j];
+				worker[j] = temp;
+			}
+		}
+	}
+}
