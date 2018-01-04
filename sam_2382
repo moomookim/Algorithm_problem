@@ -1,0 +1,128 @@
+#include <memory.h>
+#include <stdio.h>
+#include <iostream>
+
+using namespace std;
+
+#define MAX_K 10000
+#define MAX_M 1000
+#define MAX_N 100
+
+struct Micro
+{
+	int y;
+	int x;
+	int n;
+	int dir;
+};
+
+
+Micro micro[MAX_K];
+int N, M, K;
+
+void move();
+void chk_edge();
+void chk_plus();
+void micro_plus(int i);
+
+int main()
+{
+	int T;
+	cin >> T;
+	int tcase = 0;
+
+	while (tcase < T)
+	{
+		cin >> N >> M >> K;
+		for (int i = 0; i < K; i++)
+		{
+			cin >> micro[i].y >> micro[i].x >> micro[i].n >> micro[i].dir;
+		}
+
+
+		for (int i = 0; i < M; i++) {
+			move();
+			chk_plus();
+			chk_edge();
+		}
+
+		int sum = 0;
+		for (int i = 0; i < K; i++)
+		{
+			sum = sum + micro[i].n;
+		}
+		tcase++;
+		cout << "#" << tcase << " " << sum << endl;
+	}
+    return 0;
+}
+
+void move()
+{
+	for (int i = 0; i < K; i++)
+	{
+		if (micro[i].dir == 1) micro[i].y--;
+		if (micro[i].dir == 2) micro[i].y++;
+		if (micro[i].dir == 3) micro[i].x--;
+		if (micro[i].dir == 4) micro[i].x++;
+	}
+}
+
+void chk_edge()
+{
+	for (int i = 0; i < K; i++)
+	{
+		if (micro[i].y == 0 || micro[i].y == N - 1 || micro[i].x == 0 || micro[i].x == N - 1)
+		{
+			micro[i].n = micro[i].n / 2;
+			if (micro[i].dir == 1) micro[i].dir = 2;
+			else if (micro[i].dir == 2) micro[i].dir = 1;
+			else if (micro[i].dir == 3) micro[i].dir = 4;
+			else if (micro[i].dir == 4) micro[i].dir = 3;
+		}
+	}
+}
+
+int arr[4];
+
+void chk_plus()
+{
+	int count = 0;
+	for (int i = 0; i < K-1; i++)
+	{
+		for (int j = i+1; j < K; j++)
+		{
+			if (micro[i].x == micro[j].x && micro[i].y == micro[j].y)
+			{
+				arr[count] = j;
+				count++;
+			}
+		}
+		micro_plus(i);
+		memset(arr, 0, sizeof(arr));
+		count = 0;
+	}
+}
+
+void micro_plus(int i)
+{
+	int sum = micro[i].n;
+	int max = i;
+
+	for (int k = 0; k < sizeof(arr); k++)
+	{
+		if (arr[k] != 0 &µ[max].n < micro[arr[k]].n) max = arr[k];
+	}
+
+	micro[i].n = 0;
+	for (int k = 0; k < sizeof(arr); k++)
+	{
+		if (arr[k] != 0) {
+			sum = sum + micro[arr[k]].n;
+			micro[arr[k]].n = 0;
+		}
+	}
+
+	micro[max].n = sum;
+
+}
