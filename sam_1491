@@ -1,0 +1,31 @@
+#include <cmath>
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+	int T;
+	cin >> T;
+	int tc = 0;
+	while (tc < T)
+	{
+		long long int N, A, B;
+		cin >> N >> A >> B;
+		long long int min = A*N + B*(N - (N - 1));
+		for (int R = 1; R <= N - 1; R++)
+		{
+			long long int a = N / R;
+			for (int C = 1; C <= a; C++)
+			{
+				if (R *C>N) continue;
+				long long int ans = A*abs(R - C) + B*(N - R*C);
+				if (min > ans) min = ans;
+			}
+
+		}
+		cout << "#" << tc + 1 << " " << min << endl;
+		tc++;
+	}
+    return 0;
+}
