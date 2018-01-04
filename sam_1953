@@ -1,0 +1,85 @@
+
+#include <stdio.h>
+#include <iostream>
+#define size 50
+
+int map[size][size];
+int check[size][size];
+int memo[size][size];
+int Esctime;
+
+int N, M;
+
+int root[8][4] = { { 0,0,0,0 },{ 1,1,1,1 },{ 1,1,0,0 },{ 0,0,1,1 },{ 1,0,0,1 },{ 0,1,0,1 },{ 0,1,1,0 },{ 1,0,1,0 } };
+
+using namespace std;
+void DFS(int y, int x, int time);
+
+int main()
+{
+	int T, tcase;
+	cin >> T;
+	tcase = 0;
+	while (tcase < T) {
+		int hole_y, hole_x;
+		cin >> N >> M >> hole_y >> hole_x >> Esctime;
+		for (int j = 0; j < N; j++) {
+			for (int k = 0; k < M; k++) {
+				cin >> map[j][k];
+				check[j][k] = 0;
+				memo[j][k] = 0;
+			}
+		}
+		check[hole_y][hole_x] = 1;
+		memo[hole_y][hole_x] = 1;
+		DFS(hole_y, hole_x, 0);
+
+		int counting = 0;
+		for (int j = 0; j < N; j++) {
+			for (int k = 0; k < M; k++) {
+				if (memo[j][k] == 1) {
+					counting++;
+				}
+			}
+		}
+		tcase++;
+		cout << "#" << tcase << " " << counting << endl;
+	}
+	return 0;
+}
+// 상-하 // 좌-우
+void DFS(int y, int x, int time)
+{
+	//cout << "at : " <<"y is : "<< y<<"   x is :" << x << endl;
+
+	if (Esctime - 1 <= time || y < 0 || y >= N || x < 0 || x >= M) {
+		//cout << "pos 1" << endl;
+		return;
+	}
+
+	if (map[y - 1][x] != 0 && ((root[map[y][x]][0] * root[map[y - 1][x]][1]) == 1) && check[y - 1][x] == 0) {
+		check[y - 1][x] = 1;
+		memo[y - 1][x] = 1;
+		DFS(y - 1, x, time + 1);
+		check[y - 1][x] = 0;
+	}
+	if (map[y + 1][x] != 0 && ((root[map[y][x]][1] * root[map[y + 1][x]][0]) == 1) && check[y + 1][x] == 0) {
+		check[y + 1][x] = 1;
+		memo[y + 1][x] = 1;
+		DFS(y + 1, x, time + 1);
+		check[y + 1][x] = 0;
+	}
+	if (map[y][x - 1] != 0 && ((root[map[y][x]][2] * root[map[y][x - 1]][3]) == 1) && check[y][x - 1] == 0) {
+		check[y][x - 1] = 1;
+		memo[y][x - 1] = 1;
+		DFS(y, x - 1, time + 1);
+		check[y][x - 1] = 0;
+	}
+	if (map[y][x + 1] != 0 && ((root[map[y][x]][3] * root[map[y][x + 1]][2]) == 1) && check[y][x + 1] == 0) {
+		check[y][x + 1] = 1;
+		memo[y][x + 1] = 1;
+		DFS(y, x + 1, time + 1);
+		check[y][x + 1] = 0;
+	}
+	return;
+}
