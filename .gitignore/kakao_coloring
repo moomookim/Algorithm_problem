@@ -1,0 +1,63 @@
+
+#include <iostream>
+#include <stdio.h>
+
+using namespace std;
+
+int map[101][101];
+int visit[101][101];
+int dy[] = { -1,1,0,0 };
+int dx[] = { 0,0,-1,1 };
+int N,M;
+
+void  DFS(int y, int x, int idx);
+
+int main()
+{
+	cin >> N>>M;
+
+	for (int i = 0; i < M; i++)
+	{
+		for (int j = 0; j < N; j++)
+		{
+			cin >> map[i][j];
+		}
+	}
+	int idx = 1;
+	for (int i = 0; i < M; i++) {
+		for (int j = 0; j < N; j++) {
+			if (visit[i][j] == 0 && map[i][j] != 0) {
+				DFS(i, j, idx);
+				idx++;
+			}
+		}
+	}
+	idx--;
+	cout << "========================================" << endl;
+	for (int i = 0; i < M; i++)
+	{
+		for (int j = 0; j < N; j++)
+		{
+			cout << visit[i][j]<<" ";
+		}
+		cout << endl;
+	}
+	cout << " idx ; " << idx << endl;
+    return 0;
+}
+
+void DFS(int y, int x, int idx)
+{
+	if (visit[y][x] != 0) return;
+	if (y < 0 || y >= M || x < 0 || x >= N) return;
+	visit[y][x] = idx;
+	for (int i = 0; i < 4; i++)
+	{
+		int cy = y + dy[i];
+		int cx = x + dx[i];
+		if (map[y][x] == map[cy][cx]) {
+			DFS(cy, cx, idx);
+		}
+	}
+}
+
