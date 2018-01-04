@@ -1,0 +1,44 @@
+
+#include <stdio.h>
+#include <iostream>
+
+using namespace std;
+
+int map[12];
+int price[4];
+int minPrice;
+
+void DFS(int money, int month);
+
+int main() {
+	int num, T;
+	num = 0;
+	cin >> T;
+	while (num<T) {
+		for (int i = 0; i < 4; i++) {
+			cin >> price[i];
+		}
+		for (int i = 0; i < 12; i++) {
+			cin >> map[i];
+		}
+		minPrice = price[3];
+		DFS(0, 0);
+		cout << "#" << ++num << " " << minPrice << endl;
+	}
+	return 0;
+}
+
+
+void DFS(int money, int month)
+{
+	if (month > 11&&minPrice > money) {
+		minPrice = money;
+		return;
+	}
+	if (month >= 12) {
+		return;
+	}
+	DFS(money + price[0] * map[month], month + 1); 
+	DFS(money + price[1], month + 1);
+	DFS(money + price[2], month + 3);
+}
