@@ -1,0 +1,194 @@
+#include <iostream>
+#include <stdio.h>
+
+#define infoMAX 10
+#define manMAX 1000
+
+int N, M, K, A, B;
+
+int arrival_info[manMAX][2]; // 0 : index , 1 : time
+void dfs(int info_index);
+void dfs2(int info_index);
+void sorting();
+int findMin(int info_index);
+
+struct maninfo {
+	int time;
+	int chkA;
+	int chkB;
+};
+struct infodesk {
+	int time;
+	int now_time;
+};
+maninfo man[manMAX];
+infodesk info[2][infoMAX];
+
+using namespace std;
+
+int main()
+{
+	int T;
+	int tcase = 0;
+	cin >> T;
+	while (tcase < T)
+	{
+
+		cin >> N >> M >> K >> A >> B;
+
+		for (int i = 0; i < N; i++) {
+			cin >> info[0][i].time;
+			info[0][i].now_time = 0;
+		}
+		
+
+		for (int i = 0; i < M; i++) {
+			cin >> info[1][i].time;
+			info[1][i].now_time = 0;
+		}
+
+		for (int i = 0; i < K; i++) {
+			cin >> man[i].time;
+			man[i].chkA = 0;
+			man[i].chkB = 0;
+		}
+		dfs(0);
+		sorting();
+		dfs2(1);
+		int countN = 0;
+		for (int i = 0; i < K; i++)
+		{
+			if (A-1 == man[i].chkA && B-1 == man[i].chkB)
+			{
+				countN = countN + i+1;
+			}
+		}
+
+		for (int i = 0; i < manMAX; i++)
+		{
+			for (int j = 0; j < 2; j++)
+			{
+				arrival_info[i][j] = 0;
+			}
+		}
+		if (countN == 0) countN = -1;
+		cout << "#" << tcase+1 << " " << countN << endl;
+		tcase++;
+	}
+    return 0;
+}
+
+
+
+void dfs(int info_index)
+{
+	int count = 0;
+	int nchk = 0;
+	for (int i = 0; i < K; i++) 
+	{
+		int X;
+		if (info_index == 0) X = N;
+		else X = M;
+		for (int j = 0; j < X; j++)
+		{
+			nchk = 0;
+			if (info[info_index][j].now_time <= man[i].time)
+			{
+				info[info_index][j].now_time = man[i].time + info[info_index][j].time;
+				if (info_index == 0) {
+					man[i].chkA = j;
+					arrival_info[count][0] = i;
+					arrival_info[count][1] = info[info_index][j].now_time;
+					count++;
+				}
+				if (info_index == 1) {
+					man[i].chkB = j;
+				}
+				break;
+			}
+			nchk = 1;
+		}
+		if (nchk == 1)
+		{
+			int pnt = findMin(info_index);
+			man[i].chkA = pnt;
+			info[info_index][pnt].now_time = info[info_index][pnt].now_time + info[info_index][pnt].time;
+			arrival_info[count][0] = i;
+			arrival_info[count][1] = info[info_index][pnt].now_time;
+			count++;
+			nchk = 0;
+		}
+	}
+	
+}
+
+int findMin(int info_index)
+{
+	int X;
+	if (info_index == 0) X = N;
+	else X = M;
+	int minTime = 9999, minIndex;
+	for (int i = 0; i < X; i++)
+	{
+		if (info[info_index][i].now_time < minTime)
+		{
+			minIndex = i;
+			minTime = info[info_index][i].now_time;
+		}
+	}
+	return minIndex;
+}
+
+void sorting()
+{
+	int temp;
+	for (int i = 0; i < K-1; i++) {
+		int minIndex = i;
+			for (int j = i+1; j < K; j++)
+			{
+				if (arrival_info[j][1] < arrival_info[minIndex][1])
+				{
+					minIndex = j;
+				}
+				if (arrival_info[j][1] == arrival_info[minIndex][1])
+				{
+					if (man[arrival_info[j][0]].chkA < man[arrival_info[minIndex][0]].chkA) minIndex = j;
+				}
+			}
+			temp = arrival_info[i][0];
+			arrival_info[i][0] = arrival_info[minIndex][0];
+			arrival_info[minIndex][0] = temp;
+
+			temp = arrival_info[i][1];
+			arrival_info[i][1] = arrival_info[minIndex][1];
+			arrival_info[minIndex][1] = temp; 
+	}
+}
+
+void dfs2(int info_index)
+{
+	int count = 0;
+	int nchk = 0;
+	for (int i = 0; i < K; i++)
+	{
+		for (int j = 0; j < M; j++)
+		{
+			nchk = 0;
+			if (info[info_index][j].now_time <=arrival_info[i][1])
+			{
+				info[info_index][j].now_time = arrival_info[i][1] + info[info_index][j].time;
+				man[arrival_info[i][0]].chkB = j;
+				break;
+			}
+			nchk = 1;
+		}
+		//여기에 wait이 들어가야 한다.
+		if (nchk == 1)
+		{
+			int pnt = findMin(info_index);
+			man[arrival_info[i][0]].chkB = pnt;
+			info[info_index][pnt].now_time = info[info_index][pnt].now_time + info[info_index][pnt].time;
+			nchk = 0;
+		}
+	}
+}
