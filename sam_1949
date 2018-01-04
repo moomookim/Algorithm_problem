@@ -1,0 +1,88 @@
+#include <iostream>
+#include <stdio.h>
+
+using namespace std;
+
+
+int map[8][8];
+int chkmap[8][8];
+int N, K;
+int minN;
+
+int dy[] = { -1,1,0,0 };
+int dx[] = { 0,0,-1,1 };
+
+void DFS(int y, int x, bool usedK, int count);
+
+int main()
+{
+	int T, tc = 0;
+	cin >> T;
+	while (tc < T)
+	{
+		cin >> N >> K;
+		int max = 0;
+		minN = 0;
+		for (int i = 0; i < N; i++)
+		{
+			for (int j = 0; j < N; j++)
+			{
+				cin >> map[i][j];
+				chkmap[i][j] = 0;
+				if (max < map[i][j]) max = map[i][j];
+			}
+		}
+
+		for (int i = 0; i < N; i++)
+		{
+			for (int j = 0; j < N; j++)
+			{
+				if (max == map[i][j])
+				{
+					chkmap[i][j] = 1;
+					DFS(i, j, false, 1);
+					chkmap[i][j] = 0;
+				}
+			}
+		}
+		cout <<"#"<<tc+1<<" "<< minN << endl;
+
+		tc++;
+	}
+    return 0;
+}
+
+void DFS(int y, int x, bool usedK,int count)
+{
+
+	if (y < 0 || y >= N || x < 0 || x >= N) return;
+	int cy, cx;
+	int chk = false;
+	for (int i = 0; i < 4; i++)
+	{
+		cy = y + dy[i]; cx = x + dx[i];
+		if (cy < 0 || cy >= N || cx < 0 || cx >= N) continue;
+		if (map[cy][cx] < map[y][x] && chkmap[cy][cx] == 0)
+		{
+			chkmap[cy][cx] = 1;
+			DFS(cy, cx, usedK, count+1);
+			chkmap[cy][cx] = 0;
+			chk = true;
+
+		}
+		if ((map[cy][cx]-map[y][x])>=0 && (map[cy][cx] - map[y][x])+1 <= K  && usedK != true && chkmap[cy][cx] == 0)
+		{
+			int tmp = map[cy][cx];
+			map[cy][cx] = map[y][x] - 1;
+			usedK = true;
+			chkmap[cy][cx] = 1;
+			DFS(cy, cx, usedK, count+1);
+			chkmap[cy][cx] = 0;
+			map[cy][cx] = tmp;
+			usedK = false;
+			chk = true;
+		}
+	}
+
+	if (chk == false && minN < count) minN = count;
+}
