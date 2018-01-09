@@ -1,0 +1,26 @@
+#include <iostream>
+
+using namespace std;
+
+int tri[105];
+
+int main()
+{
+	int tc = 0, T;
+	cin >> T;
+	while (tc < T) {
+		int N;
+		cin >> N;
+
+		tri[1] = tri[2] = 1;
+
+		for (int i = 3; i <= N; i++)
+		{
+			tri[i] = tri[i - 3] + tri[i - 2];
+		}
+
+		cout << tri[N] << endl;
+	}
+    return 0;
+}
+
