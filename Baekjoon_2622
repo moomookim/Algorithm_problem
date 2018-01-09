@@ -1,0 +1,27 @@
+
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+	int n;
+	cin >> n;
+
+	int cnt = 0;
+	
+	for (int i = 1; i <= n/3; i++) {
+		for (int j = i; j <= n/2; j++) {
+			int k = n - i - j;
+			if (i > k || j > k) break;
+			if (k <1) continue;
+			if (i + j > k) cnt++;
+			
+		}
+	}
+
+	printf("%d", cnt);
+    return 0;
+}
+
+
