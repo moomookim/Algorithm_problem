@@ -1,0 +1,49 @@
+// backjoon_1051_2.cpp : 콘솔 응용 프로그램에 대한 진입점을 정의합니다.
+//
+
+#include "stdafx.h"
+#include <iostream>
+#include <stdio.h>
+using namespace std;
+
+int map[51][51];
+int N, M;
+
+int main()
+{
+	cin >> N >> M;
+
+	for (int i = 0; i < N; i++)
+	{
+		for (int j = 0; j < M; j++)
+		{
+			scanf_s("%1d", &map[i][j]); //  at bj, use scanf, not scanf_s
+		}
+	}
+
+	int maxLength = 0;
+	int minLength;
+	if (N > M) minLength =  M;
+	else minLength = N;
+
+
+	for (int i = 0; i < N; i++)
+	{
+		for (int j = 0; j < M; j++)
+		{
+			for (int k = 0; k < minLength; k++)
+			{
+				if (i + k >= N || j + k >= M) break;
+				if (map[i][j] == map[i][j + k] && map[i][j]== map[i + k][j] &&map[i][j]== map[i + k][j + k]) {
+					if (maxLength < k + 1) maxLength = k + 1;
+					
+				}
+			}
+		}
+	}
+
+	cout << maxLength*maxLength;
+
+    return 0;
+}
+
