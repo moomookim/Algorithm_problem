@@ -1,0 +1,79 @@
+#include <iostream>
+#include <queue>
+
+using namespace std;
+
+int tom[1002][1002];
+int q[1002][1002];
+
+int dy[] = { -1,1,0,0 };
+int dx[] = { 0,0,-1,1 };
+int N, M;
+
+int main()
+{
+	queue <int> qy, qx;
+	cin >> M >> N;
+	for (int i = 1; i <= N; i++)
+	{
+		for (int k = 1; k <= M; k++)
+		{
+			cin >> tom[i][k];
+			if (tom[i][k] == 1)
+			{
+				qy.push(i);
+				qx.push(k);
+				q[i][k] = 1;
+			}
+			if (tom[i][k] == -1)
+			{
+				q[i][k] = -1;
+			}
+		}
+	}
+
+	int cur_y, cur_x, next_y, next_x;
+
+
+	while (!qy.empty())
+	{
+		cur_y = qy.front(); cur_x = qx.front();
+		qy.pop(); qx.pop();
+
+		for (int i = 0; i < 4; i++)
+		{
+			next_y = cur_y + dy[i];
+			next_x = cur_x + dx[i];
+			if (next_y <= 0 || next_x <= 0 || next_y > N || next_x > M) continue;
+			if (tom[next_y][next_x] == 0 && q[next_y][next_x]==0)
+			{
+				tom[next_y][next_x] = 1;
+				q[next_y][next_x] = q[cur_y][cur_x] + 1;
+				qy.push(next_y);
+				qx.push(next_x);
+			}
+
+		}
+	}
+	int max_day = -1;
+	for (int i = 1; i <= N; i++)
+	{
+		for (int k = 1; k <= M; k++)
+		{
+			//cout << q[i][k] << " ";
+			if (max_day < q[i][k]) max_day = q[i][k];
+			if (q[i][k] == 0) {
+				cout << -1 << endl;
+				return 0;
+			}
+		}
+		//cout << endl;
+	}
+	if (max_day == -1) {
+		cout << "0" << endl;
+		return 0;
+	}
+	cout << max_day -1<< endl;
+    return 0;
+}
+
