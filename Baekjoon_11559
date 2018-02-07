@@ -1,0 +1,123 @@
+#include <iostream>
+#include <cstdio>
+
+using namespace std;
+
+#define N 12
+#define M 6
+
+char map[N][M];
+int visit[N][M];
+
+int dy[] = { -1,1,0,0 };
+int dx[] = { 0,0,1,-1 };
+int cnt_crush;
+
+void flood(int yy, int xx, int cnt);
+int DFS();
+void change_map();
+
+int main()
+{
+	for (int i = 0; i < N; i++)
+	{
+		for (int j = 0; j < M; j++)
+		{
+			char tmp;
+			scanf_s("%1c", &tmp);
+			if (tmp == '\n') scanf_s("%1c", &tmp);
+			map[i][j] = tmp;
+		}
+	}
+	int ans = 0;
+	while (1)
+	{
+		if (DFS() == -1) break;
+		for (int i = 0; i < N; i++)
+			for (int j = 0; j < M; j++)
+				visit[i][j] = 0;
+
+		ans++;
+	}
+	cout << ans << endl;
+
+    return 0;
+}
+
+int DFS()
+{
+	int idx = 1;
+	for (int i = 0; i < N; i++) {
+		for (int j = 0; j < M; j++) {
+			if (visit[i][j] == 0 && map[i][j] != '.') {
+				flood(i, j, idx);
+				idx++;
+			}
+		}
+	}
+	int cnt_num = 0;
+
+	bool chk_pnt[75] = { false, };
+
+	for (int k = 1; k <= idx; k++) {
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < M; j++) if (visit[i][j] == k)cnt_num++;
+		}
+		if (cnt_num >= 4) chk_pnt[k] = true;
+		cnt_num = 0;
+	}
+
+	int chk_minus = 0;
+
+	for (int i = 0; i < 75; i++) if (chk_pnt[i] == true) chk_minus ++ ;
+
+	if (chk_minus == 0) return -1;
+
+	for (int k = 1; k <= idx; k++) {
+		if (chk_pnt[k] == true) {
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < M; j++) if (visit[i][j] == k) map[i][j] = '.';
+			}
+		}
+	}
+	change_map();
+	return 0;
+}
+
+void flood(int yy, int xx, int idx)
+{
+	if (visit[yy][xx] != 0) return;
+	if (yy < 0 || yy >= N || xx < 0 || xx >= M) return;
+
+	visit[yy][xx] = idx;
+	for (int i = 0; i < 4; i++)
+	{
+		int cy = yy + dy[i];
+		int cx = xx + dx[i];
+		if (map[yy][xx] == map[cy][cx]) {
+			flood(cy, cx, idx);
+		}
+	}
+}
+
+void change_map()
+{
+	for (int i = 0; i <M; i++)
+	{
+		int cnt = 0;
+		for (int j = N-1; j >=0; j--)
+		{
+			if (map[j][i] == '.')
+			{
+				for (int k = j - 1; k>= 0; k--)
+				{
+					if (map[k][i] != '.') {
+						map[j][i] = map[k][i];
+						map[k][i] = '.';
+						break;
+					}
+				}
+			}
+		}
+	}
+}
