@@ -1,0 +1,140 @@
+#include <iostream>
+#include <cstdio>
+#include <math.h>
+#include <queue>
+
+using namespace std;
+
+char map[51][51];
+int visit[51][51][2];
+
+int tree[3][2];
+int dest[3][2];
+int tree_rot;
+
+int tree_y, tree_x;
+int dest_y, dest_x;
+
+int dy[] = { -1,1,0,0 };
+int dx[] = { 0,0,-1,1 };
+
+
+int N;
+
+int main()
+{
+	cin >> N;
+	int cnt_e = 0;
+	int cnt_b = 0;
+
+	for (int i = 0; i < N; i++)
+	{
+		for (int j = 0; j < N; j++)
+		{
+			char tmp;
+			scanf_s("%1c", &tmp);
+			if (tmp == '\n') scanf_s("%1c", &tmp);
+			map[i][j] = tmp;
+			if (tmp == 'B')
+			{
+				tree[cnt_b][0] = i;
+				tree[cnt_b][1] = j;
+				cnt_b++;
+			}
+			if (tmp == 'E')
+			{
+				dest[cnt_e][0] = i;
+				dest[cnt_e][1] = j;
+				cnt_e++;
+			}
+		}
+	}
+
+
+	if (tree[1][0] - tree[0][0] != 0) tree_rot = 1;
+	else if (tree[1][1] - tree[0][1] != 0) tree_rot = 0;
+
+	tree_y = tree[1][0]; tree_x = tree[1][1];
+
+	queue <int> qy, qx,qr, qt;
+	qy.push(tree_y);
+	qx.push(tree_x);
+	qr.push(tree_rot);
+	qt.push(0);
+
+	int curr_y, curr_x, curr_r, curr_t;
+	int next_y, next_x, next_r, next_t;
+
+	while (!qy.empty())
+	{
+		curr_y = qy.front(); curr_x = qx.front();
+		curr_r = qr.front(); curr_t = qt.front();
+		qy.pop(); qx.pop(); qt.pop(); qr.pop();
+		for (int i = 4; i>=0 ; i--)
+		{
+			int chk_rot = 0;
+			if (i != 4)
+			{
+				next_y = curr_y + dy[i]; next_x = curr_x + dx[i];
+				next_r = curr_r;
+			}
+			else if(i==4)
+			{
+				next_y = curr_y; next_x = curr_x;
+				for (int q = -1; q < 2; q++)
+				{
+					for (int w = -1; w < 2; w++)
+					{
+						if (map[next_y + q][next_x + w] == '1') {
+							chk_rot = 1;
+						}
+					}
+				}
+				if (curr_r == 1) next_r = 0;
+				else next_r = 1;
+			}
+			if (chk_rot == 1) continue;
+			if (visit[next_y][next_x][next_r] == 1) continue;
+			if (map[next_y][next_x] == '1') continue;
+			if (next_r == 0)
+			{
+				if (next_y < 0 || next_y >= N || next_x < 0 || next_x >= N) continue;
+				if (next_x - 1 < 0 || next_x + 1 >= N) continue;
+				if (map[next_y][next_x - 1] == '1' || map[next_y][next_x + 1] =='1') continue;
+			}
+			if (next_r == 1)
+			{
+				if (next_y < 0 || next_y >= N || next_x < 0 || next_x >= N) continue;
+				if (next_y - 1 < 0 || next_y + 1 >= N) continue;
+				if (map[next_y-1][next_x] == '1' || map[next_y + 1][next_x] == '1') continue;
+			}
+			next_t = curr_t + 1;
+			
+			if (map[next_y][next_x]=='E')
+			{
+				if (next_r == 0)
+				{
+					if (map[next_y][next_x-1] == 'E' && map[next_y][next_x+1]=='E')
+					{
+						cout << next_t << endl;
+						return 0;
+					}
+				}
+				if (next_r == 1)
+				{
+					if (map[next_y - 1][next_x] == 'E' && map[next_y + 1][next_x] == 'E')
+					{
+						cout << next_t << endl;
+						return 0;
+					}
+				}
+			}
+			visit[next_y][next_x][next_r] = 1;
+			qy.push(next_y); qx.push(next_x); qr.push(next_r); qt.push(next_t);
+
+		}
+	}
+	cout << 0 << endl;
+    return 0;
+}
+
