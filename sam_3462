@@ -1,0 +1,70 @@
+
+#include <cstdio>
+#include <math.h>
+#include <iostream>
+
+using namespace std;
+
+long double goalx, goaly;
+long double dp[31][31][31];
+
+int dy[] = { -1,-1,0,0 };
+int dx[] = { -1,0,-1,0 };
+
+bool chk(int a);
+
+int main()
+{
+	int tc = 0, T;
+	cin >> T;
+	while (tc < T)
+	{
+		cin >> goalx >> goaly;
+		goalx = goalx / 100;
+		goaly = goaly / 100;
+
+		for (int i = 0; i <= 30; i++)
+			for (int j = 0; j <= 30; j++)
+				for (int k = 0; k <= 30; k++)
+					dp[i][j][k] = 0.0;
+
+		long double ans = 0.0;
+
+		dp[1][0][0] = (1 - goaly)*(1 - goalx);
+		dp[1][1][0] = goalx*(1 - goaly);
+		dp[1][0][1] = (1 - goalx)*goaly;
+		dp[1][1][1] = goalx*goaly;
+
+		for (int k = 2; k <= 30; k++)
+			for (int i = 0; i <= k; i++)
+				for (int j = 0; j <= k; j++)
+					for (int idx = 0; idx < 4; idx++)
+					{
+						int ci = i + dy[idx]; int cj = j + dx[idx];
+						if (ci < 0 || cj < 0) continue;
+						if (idx == 0) dp[k][i][j] = dp[k][i][j] + dp[k - 1][ci][cj] * goalx*goaly;
+						if (idx == 1) dp[k][i][j] = dp[k][i][j] + dp[k - 1][ci][cj] * goalx*(1 - goaly);
+						if (idx == 2) dp[k][i][j] = dp[k][i][j] + dp[k - 1][ci][cj] * (1 - goalx)*goaly;
+						if (idx == 3) dp[k][i][j] = dp[k][i][j] + dp[k - 1][ci][cj] * (1 - goalx)*(1 - goaly);
+					}
+
+		for (int i = 0; i <= 30; i++)
+			for (int k = 0; k <= 30; k++)
+				if (chk(i) || chk(k)) ans = ans + dp[30][i][k];
+
+		cout << fixed;
+		cout.precision(5);
+		cout << "#" << tc + 1 << " " << ans << endl;
+		tc++;
+	}
+	return 0;
+}
+
+bool chk(int a)
+{
+	if (a == 1 || a == 0) return false;
+	for (int i = 2; i < a; i++)
+		if (a % i == 0) return false;
+
+	return true;
+}
