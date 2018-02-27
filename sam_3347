@@ -1,0 +1,46 @@
+#include <iostream>
+
+using namespace std;
+
+int A[1003], B[1003];
+int vote[1003], cnt[1003];
+
+int main()
+{
+	int tc = 0, T;
+	cin >> T;
+
+	while (tc < T)
+	{
+		int N, M;
+		cin >> N >> M;
+
+		for (int i = 0; i < N; i++) cin >> A[i];
+		for (int i = 0; i < M; i++) {
+			cin >> B[i];
+			vote[i] = 0;
+            cnt[i] = 0;
+		}
+
+		for (int i = 0; i < M; i++)
+		{
+			for (int k = 0; k < M; k++)
+			{
+				if (B[i] < A[k]) continue;
+				vote[i] = k;
+				break;
+			}
+			cnt[vote[i]]++;
+		}
+
+		int ans = 0;
+		int max = 0;
+        
+		for (int i = 0; i < N; i++) if (cnt[i] > cnt[max]) max = i;
+				
+		cout << "#" << tc+1 << " " << max+1 << endl;
+		tc++;
+	}
+    return 0;
+}
+
