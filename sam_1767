@@ -1,0 +1,137 @@
+#include <iostream>
+
+using namespace std;
+
+int map[13][13];
+int line[13][13];
+
+int chip[13][2];
+
+int dy[] = { -1,1,0,0 };
+int dx[] = { 0,0,-1,1 };
+
+int chip_cnt;
+int min_cnt;
+
+int N;
+
+void minus_line(int y, int x, int d);
+void plus_line(int y, int x, int d);
+int chk_line();
+
+void DFS(int idx);
+
+int main()
+{
+	int T, tc;
+	tc = 0;
+	cin >> T;
+	while (tc < T)
+	{
+		cin >> N;
+		chip_cnt = 0;
+		for (int i = 0; i < N; i++)
+		{
+			for (int j = 0; j < N; j++)
+			{
+				cin >> map[i][j];
+				if (map[i][j] == 1)
+				{
+					chip[chip_cnt][0] = i;
+					chip[chip_cnt][1] = j;
+					chip_cnt++;
+				}
+			}
+		}
+		min_cnt = N*N;
+		DFS(0);
+
+		cout << "#" << tc + 1 << " " << min_cnt << endl;
+		tc++;
+
+	}
+	return 0;
+}
+
+void DFS(int idx)
+{
+	if (idx == chip_cnt)
+	{
+		int tmp = chk_line();
+		if (tmp < min_cnt) {
+			min_cnt = tmp;
+		}
+		return;
+	}
+	if (chip[idx][0] == 0 || chip[idx][1] == 0)
+	{
+		DFS(idx + 1);
+		return;
+	}
+	int chk_dir = 0;
+	for (int i = 0; i < 4; i++)
+	{
+		int cy = chip[idx][0] + dy[i]; int cx = chip[idx][1] + dx[i];
+		if (cy < 0 || cy >= N || cx < 0 || cx >= N) break;
+		while (cy >= 0 && cy < N && cx >= 0 && cx < N)
+		{
+			if (map[cy][cx] == 1)
+			{
+				chk_dir++;
+				break;
+			}
+			cy = cy + dy[i]; cx = cx + dx[i];
+		}
+	}
+	if (chk_dir == 4)
+	{
+		DFS(idx + 1);
+		return;
+	}
+	for (int i = 0; i < 4; i++)
+	{
+		plus_line(chip[idx][0], chip[idx][1], i);
+		if (chk_line() != -1) 
+		DFS(idx + 1);
+		minus_line(chip[idx][0], chip[idx][1], i);
+	}
+}
+
+int chk_line()
+{
+	int ret = 0;;
+	for (int i = 0; i < N; i++)
+	{
+		for (int j = 0; j < N; j++)
+		{
+			if (map[i][j] == 2) ret++;
+			if (map[i][j]>2) return -1;
+		}
+	}
+	return ret;
+}
+
+void plus_line(int y, int x, int d)
+{
+	int cy = y; int cx = x;
+	while (1)
+	{
+		//cout << "point 15" << endl;
+		cy = cy + dy[d]; cx = cx + dx[d];
+		if (cy < 0 || cy >= N || cx<0 || cx >= N) return;
+		//if (map[cy][cx] == 1) return;
+		map[cy][cx] = map[cy][cx] + 2;
+	}
+}
+
+void minus_line(int y, int x, int d)
+{
+	int cy = y; int cx = x;
+	while (1)
+	{
+		cy = cy + dy[d]; cx = cx + dx[d];
+		if (cy < 0 || cy>+N || cx<0 || cx>+N) return;
+		//if (map[cy][cx] == 1) return;
+		map[cy][cx] = map[cy][cx] - 2;
+	}
+}
