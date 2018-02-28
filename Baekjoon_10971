@@ -1,0 +1,72 @@
+#include <iostream>
+#include <queue>
+
+using namespace std;
+
+int map[17][17];
+
+
+int N;
+long long int min_cnt;
+
+void DFS(int idx, int cnt);
+
+int main()
+{
+
+	cin >> N;
+
+	for (int i = 0; i < N; i++)
+		for (int j = 0; j < N; j++)
+			cin >> map[i][j];
+
+
+	min_cnt = 1000000 * 16;
+	
+	queue<int> q, t;
+	queue<bool> v[17];
+	int curr, next;
+	int curr_t, next_t;
+	bool visit[17] = { false, };
+	q.push(0);
+	t.push(0);
+
+	for (int i = 0; i < N; i++) v[i].push(false);
+	
+	while (!q.empty())
+	{
+		curr = q.front(); q.pop();
+		curr_t = t.front(); t.pop();
+		for (int i = 0; i < N; i++) {
+			visit[i] = v[i].front();
+			v[i].pop();
+		}
+
+		for (int i = 0; i < N; i++) {
+			if (visit[i] == false) break;
+			if (i == N - 1 && curr == 0)
+			{
+				if (min_cnt > curr_t)min_cnt = curr_t;
+			}
+		}
+
+		for (int i = 0; i < N; i++)
+		{
+			if (curr == i)continue;
+			if (visit[i] == true ) continue;
+			if (map[curr][i] == 0) continue;
+            if(curr_t>min_cnt) continue;
+			visit[i] = true;
+
+			q.push(i);
+			for (int i = 0; i < N; i++) {
+				v[i].push(visit[i]);
+			}
+			t.push(curr_t + map[curr][i]);
+			visit[i] =  0;
+		}
+	}
+	cout << min_cnt << endl;
+    return 0;
+}
+
