@@ -1,0 +1,23 @@
+#include <iostream>
+
+using namespace std;
+
+
+int main()
+{
+	long long int A, B, V, N;
+	cin >> A >> B >> V;
+
+	N = V - A;
+	long long int K = A - B;
+	long long int D;
+	if (N % K != 0) {
+		D = (N / K) + 1;
+	}
+	else D = (N / K);
+
+	cout << D + 1 << endl;
+
+    return 0;
+}
+
