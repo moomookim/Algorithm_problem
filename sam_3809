@@ -1,0 +1,55 @@
+#include <iostream>
+
+using namespace std;
+
+long long int num[1001];
+int visit[1000];
+long long int N;
+
+int main()
+{
+	int T, tc = 0;
+	cin >> T;
+	while(tc<T){
+	
+		cin >> N;
+		for (int i = 0; i < N; i++)
+			cin >> num[i];
+
+		for (int i = 0; i < 1000; i++)
+			visit[i] = false;
+
+		for (int i = 0; i < N; i++)
+		{
+			if (i == N-1)
+			{
+				visit[num[i]] = true;
+			}
+			else if (i == N - 2)
+			{
+				visit[num[i]] = true;
+				visit[num[i] * 10 + num[i + 1]] = true;
+			}
+			else
+			{
+				visit[num[i]] = true;
+				visit[num[i] * 10 + num[i + 1]] = true;
+				visit[num[i] * 100 + num[i + 1] * 10 + num[i + 2]] = true;
+			}
+
+		}
+
+		for (int i = 0; i < 1000; i++)
+		{
+			if (visit[i] == true)continue;
+			else {
+				cout <<"#"<<tc+1<<" "<< i << endl;
+				break;
+			}
+		}
+		tc++;
+	}
+
+
+    return 0;
+}
