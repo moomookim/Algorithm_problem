@@ -1,0 +1,38 @@
+#include <iostream>
+#include <cstdio>
+using namespace std;
+
+int N;
+int visit[9];
+int tmp[9];
+
+void DFS(int cnt);
+
+int main()
+{
+	cin >> N;
+
+	DFS(0);
+  return 0;
+}
+
+void DFS(int cnt)
+{
+	if (cnt == N)
+	{
+		for (int i = 0; i < N; i++)
+			printf("%d ",tmp[i]);
+		printf("\n");
+		return;
+	}
+
+	for (int i = 1; i <= N; i++)
+	{
+		if (visit[i] == true)continue;
+		
+		visit[i] = true;
+		tmp[cnt] = i;
+		DFS(cnt + 1);
+		visit[i] = false;
+	}
+}
