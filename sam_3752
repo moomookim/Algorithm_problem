@@ -1,0 +1,52 @@
+#include <iostream>
+#include <queue>
+
+using namespace std;
+
+#define MAX_N 100 * 100 + 1
+
+int point[100];
+int q[MAX_N];
+bool visit[MAX_N];
+int N;
+
+void DFS(int idx, int grade);
+
+int main()
+{
+	int tc = 0, T;
+
+	cin >> T;
+	while (tc < T)
+	{
+		cin >> N;
+		for (int i = 0; i < N; i++) cin >> point[i];
+		for (int i = 0; i < MAX_N; i++) visit[i] = false;      
+		int cnt = 1;
+
+		for (int idx = 0; idx < N; idx++)
+		{
+			int tmp = 0;
+			for (int k = 0; k < cnt; k++)
+			{
+				if (visit[q[k] + point[idx]] == false)
+				{
+					visit[q[k] + point[idx]] = true;
+					q[cnt + tmp]  = q[k] + point[idx];
+					tmp++;
+				}
+			}
+			cnt = cnt + tmp;
+		}
+
+		cnt = 0;
+		for (int k = 0; k < MAX_N; k++)
+		{
+			if (visit[k] == true) cnt++;
+		}
+
+		cout <<"#"<<tc+1<<" "<< cnt+1 << endl;
+		tc++;
+	}
+    return 0;
+}
