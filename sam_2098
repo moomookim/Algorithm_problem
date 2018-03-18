@@ -1,0 +1,63 @@
+#include <iostream>
+
+using namespace std;
+
+int box[100];
+int t;
+
+int min();
+int max();
+
+int main()
+{
+	int tc = 0; 
+	int T = 10;
+	while (tc < T)
+	{
+		cin >> t;
+		for (int i = 0; i < 100; i++)
+			cin >> box[i];
+		int max_box;
+		int min_box;
+		for (int i = 0; i < t; i++)
+		{
+			max_box = max();
+			min_box = min();
+			if (box[max_box] - box[min_box] <= 1) break;
+			
+			box[max_box]--;
+			box[min_box]++;
+		}
+		max_box = max();
+		min_box = min();
+		cout << "#" << tc + 1 << " " << box[max_box]-box[min_box] << endl;
+		tc++;
+	}
+    return 0;
+}
+
+int max()
+{
+	int ret = 0;
+	int ret_i;
+	for (int i = 0; i < 100; i++)
+		if (ret < box[i]) {
+			ret = box[i];
+			ret_i = i;
+		}
+
+	return ret_i;
+}
+
+int min()
+{
+	int ret = 9999;
+	int ret_i;
+	for (int i = 0; i < 100; i++)
+		if (ret > box[i]) {
+			ret = box[i];
+			ret_i = i;
+		}
+
+	return ret_i;
+}
