@@ -1,0 +1,99 @@
+#include <iostream>
+
+using namespace std;
+
+long long int N,M ;
+long long int memo[101];
+long long int cost[101];
+
+long long int dp[101][2][10001];
+
+int min(int a, int b);
+int max(int a, int b);
+
+void sorting();
+
+int main()
+{
+	cin >> N >> M;
+
+	long long int cost_sum = 0;
+
+	for (int i = 0; i < N; i++) {
+		cin >> memo[i];
+	}
+	for (int i = 0; i < N; i++) {
+		cin >> cost[i];
+		cost_sum = cost_sum + cost[i];
+	}
+
+	sorting();
+
+
+	int curr_cost = cost[0];
+	
+	dp[0][0][0] = 0;
+	dp[0][1][cost[0]] = memo[0];
+	
+	if (M <= memo[0])
+	{
+		cout << cost[0] << endl;
+		return 0;
+	}
+
+	int min_cost = 100000;
+
+	for (int i = 1; i <N; i++)
+	{
+		for (int k = 0; k <= curr_cost + cost[i]; k++)
+		{
+			int tmp1 = dp[i][0][k] = max(dp[i - 1][0][k], dp[i - 1][1][k]);
+			int tmp2 = dp[i][1][k + cost[i]] = memo[i] + max(dp[i - 1][0][k], dp[i - 1][1][k]);
+			
+			if (tmp2 >= M)
+			{
+				if (min_cost > k + cost[i])
+				{
+					min_cost = k + cost[i];
+				}
+			}
+
+		}
+		curr_cost = curr_cost + cost[i];
+	}
+
+	cout << min_cost << endl;
+    return 0;
+}
+
+int min(int a, int b)
+{
+	if (a > b) return b;
+	else return a;
+}
+
+int max(int a, int b)
+{
+	if (a > b) return a;
+	else return b;
+}
+
+void sorting()
+{
+	for (int i = 0; i < N-1; i++)
+	{
+		int tmp = i;
+		for (int j = i+1; j < N; j++)
+		{
+			if (cost[tmp] > cost[j])
+			{
+				tmp = j;
+			}
+		}
+		int tmp_c = cost[tmp], tmp_m = memo[tmp];
+		cost[tmp] = cost[i];
+		cost[i] = tmp_c;
+		memo[tmp] = memo[i];
+		memo[i] = tmp_m;
+	}
+}
