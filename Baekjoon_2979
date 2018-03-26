@@ -1,0 +1,45 @@
+#include <iostream>
+
+using namespace std;
+
+struct Truck {
+	int start;
+	int end;
+};
+
+Truck truck[3];
+int time[101];
+int A, B, C;
+int main()
+{
+	cin >> A >> B >> C;
+
+	for (int i = 0; i < 3; i++)
+		cin >> truck[i].start >> truck[i].end;
+
+	for (int i = 0; i < 3; i++)
+		for (int k = truck[i].start; k < truck[i].end; k++)		
+			time[k]++;
+		
+	
+
+	int money = 0;
+
+	for (int i = 0; i <= 100; i++)
+	{
+		switch (time[i]) {
+		case 1:
+			money = money + A;
+			break;
+		case 2:
+			money = money + 2 * B;
+			break;
+		case 3:
+			money = money + 3 * C;
+			break;
+		}
+	}
+	cout << money << endl;
+    return 0;
+}
+
