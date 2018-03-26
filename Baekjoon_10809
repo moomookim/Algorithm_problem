@@ -1,0 +1,26 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+int main()
+{
+	string str;
+
+	//cin >> str;
+	getline(cin, str);
+
+	int map[26];
+	for (int i = 0; i < 26; i++)
+		map[i] = -1;
+
+	for (int i = 0; i < str.length(); i++)
+	{
+		int tmp = str[i] - 'a';
+		if (map[tmp] == -1) map[tmp] = i;
+	}
+
+	for (int i = 0; i<26; i++)
+		cout << map[i] << " ";
+    return 0;
+}
