@@ -1,0 +1,57 @@
+#include <iostream>
+
+using namespace std;
+
+void che(int end);
+int num[1000001];
+
+int main()
+{
+	int tc = 0; int T;
+	cin >> T;
+
+  che(1000000);
+    
+	while (tc < T)
+	{
+		int A, B;
+		cin >> A >> B;
+		int cnt = 0;
+		int min_cnt = 0;
+
+		for (int i = A; i <= B; i++)
+		{
+			if (num[i]!=0 && i % 4 == 1)
+			{
+				min_cnt = i;
+				break;
+			}
+		}
+
+		for (int i = min_cnt; i <= B; i = i + 4)
+		{
+			if (num[i]!=0 && i % 4 == 1)
+				cnt++;
+		}
+		if (A <= 2) cnt++;
+
+		cout << "#" << tc + 1 << " " << cnt << endl;
+		tc++;
+	}
+	return 0;
+}
+
+void che(int end)
+{
+
+	for (int i = 2; i <= end; i++)
+		num[i] = i;
+
+
+	for (int i = 2; i <= end; i++)
+	{
+		if (num[i] == 0) continue;
+		for (int j = i + i; j <= end; j = j + i)
+			num[j] = 0;
+	}
+}
