@@ -1,0 +1,170 @@
+#include <iostream>
+
+using namespace std;
+
+int map[21][21];
+int row[21];
+int col[21];
+int N, M;
+
+void rowrow(int idx);
+void column(int idx);
+
+int main()
+{
+	int tc = 0, T;
+	cin >> T;
+
+	while (tc < T)
+	{
+		cin >> N >> M;
+		for (int i = 0; i < N; i++)
+		{
+			for (int k = 0; k < N; k++)
+			{
+				cin >> map[i][k];
+				col[i] = row[i] = false;
+			}
+		}
+		int cnt = 0;
+		for (int i = 0; i < N; i++)
+		{
+			column(i);
+			rowrow(i);
+			if (col[i] == true) {
+				cnt++;
+				//cout << "col[" << i << "] is true" << endl;
+			}
+			if (row[i] == true) {
+				cnt++;
+				//cout << "row[" << i << "] is true" << endl;
+			}
+		}
+		cout << "#" << tc + 1 << " " << cnt << endl;
+		tc++;
+	}
+	return 0;
+}
+
+void column(int idx)
+{
+	int tmp = map[0][idx];
+	int cnt = 1;
+	bool chk[21];
+	for (int i = 0; i < N; i++)
+		chk[i] = false;
+
+	for (int i = 1; i < N; i++)
+	{
+		if (tmp == map[i][idx]) cnt++;
+		if (tmp < map[i][idx])
+		{
+			if (tmp + 1 < map[i][idx]) return;
+			if (tmp + 1 == map[i][idx])
+			{
+				if (cnt < M) return;
+				if (cnt >= M)
+				{
+					for (int k = i - M; k < i; k++)
+						chk[k] = true;
+					cnt = 1;
+					tmp = map[i][idx];
+				}
+			}
+		}
+		if(tmp>map[i][idx]) {
+			tmp = map[i][idx];
+			cnt = 1;
+		}
+	}
+
+	tmp = map[N - 1][idx];
+	cnt = 1;
+	for (int i = N - 2; i >= 0; i--)
+	{
+		if (tmp == map[i][idx]) cnt++;
+		if (tmp < map[i][idx])
+		{
+			if (tmp + 1 < map[i][idx]) return;
+			if (tmp + 1 == map[i][idx])
+			{
+				if (cnt < M) return;
+				if (cnt >= M)
+				{
+					for (int k = i + 1; k <=M+ i; k++)
+						if (chk[k] == true) return;
+					cnt = 1;
+					tmp = map[i][idx];
+				}
+			}
+		}
+		if (tmp>map[i][idx]) {
+			tmp = map[i][idx];
+			cnt = 1;
+		}
+	}
+	col[idx] = true;
+}
+
+
+void rowrow(int idx)
+{
+	int tmp = map[idx][0];
+	int cnt = 1;
+	bool chk[21];
+	for (int i = 0; i < N; i++)
+		chk[i] = false;
+
+	for (int i = 1; i < N; i++)
+	{
+		if (tmp == map[idx][i]) cnt++;
+		if (tmp < map[idx][i])
+		{
+			if (tmp + 1 < map[idx][i]) return;
+			if (tmp + 1 == map[idx][i])
+			{
+				if (cnt < M) return;
+				if (cnt >= M)
+				{
+					for (int k = i - M; k < i; k++)
+						chk[k] = true;
+					cnt = 1;
+					tmp = map[idx][i];
+				}
+			}
+		}
+		if (tmp>map[idx][i]) {
+			tmp = map[idx][i];
+			cnt = 1;
+		}
+	}
+
+	tmp = map[idx][N-1];
+	cnt = 1;
+	for (int i = N - 2; i >= 0; i--)
+	{
+		if (tmp == map[idx][i]) cnt++;
+		if (tmp < map[idx][i])
+		{
+			if (tmp + 1 <map[idx][i]) return;
+			if (tmp + 1 == map[idx][i])
+			{
+				if (cnt < M) return;
+				if (cnt >= M)
+				{
+					for (int k = i + 1; k <= M + i; k++)
+						if (chk[k] == true) {
+							return;
+						}
+					cnt = 1;
+					tmp = map[idx][i];
+				}
+			}
+		}
+		if (tmp>map[idx][i]) {
+			tmp = map[idx][i];
+			cnt = 1;
+		}
+	}
+	row[idx] = true;
+}
