@@ -1,0 +1,182 @@
+#include <iostream>
+
+using namespace std;
+
+bool man_stair[11];
+int man_xy[11][4];
+int stair_xy[2][3];
+
+int N;
+int map[11][11];
+int stairA[11];
+int stairB[11];
+int cnt_man, cnt_stair;
+
+int minTime;
+
+void DFS(int idx);
+void sorting(int a, int b);
+void sim();
+int jul(int a, int b);
+int main()
+{
+	int tc = 0, T;
+	cin >> T;
+
+	while (tc < T)
+	{
+		cin >> N;
+		cnt_man = 0, cnt_stair = 0;
+		for (int i = 0; i < N; i++)
+		{
+			for (int k = 0; k < N; k++)
+			{
+				cin >> map[i][k];
+				if (map[i][k] == 1)
+				{
+					man_xy[cnt_man][0] = i; //y
+					man_xy[cnt_man][1] = k; //x
+					cnt_man++;
+
+				}
+				if (map[i][k]>1)
+				{
+					stair_xy[cnt_stair][0] = i;
+					stair_xy[cnt_stair][1] = k;
+					stair_xy[cnt_stair][2] = map[i][k];
+					cnt_stair++;
+				}
+			}
+		}
+        
+    
+		minTime = 999999;
+		DFS(0);
+		cout << "#" << tc + 1 << " " << minTime << endl;
+		tc++;
+
+	}
+    return 0;
+}
+
+void DFS(int idx)
+{
+	if (idx>= cnt_man)
+	{
+		sim();
+		return;
+	}
+
+	DFS(idx + 1);
+	man_stair[idx] = true;
+	DFS(idx+1);
+	man_stair[idx] = false;
+}
+
+void sim()
+{
+	int stair_A = 0;
+	int stair_B = 0;
+	for (int i = 0; i < cnt_man; i++)
+	{
+		if (man_stair[i] == true)
+		{
+			man_xy[i][2] = jul(stair_xy[0][0],man_xy[i][0]) + jul(stair_xy[0][1], man_xy[i][1]);
+			stairA[stair_A] = man_xy[i][2]+1;
+			stair_A++;
+		}
+		if (man_stair[i] == false)
+		{
+			man_xy[i][2] = jul(stair_xy[1][0], man_xy[i][0]) + jul (stair_xy[1][1] , man_xy[i][1]);
+			stairB[stair_B] = man_xy[i][2]+1;
+			stair_B++;
+		}
+	}
+
+	sorting(stair_A, stair_B);
+
+	int tA = stair_xy[0][2];
+	int tB = stair_xy[1][2];
+    
+	int cntA = 0, cntB = 0;
+	int saveA[3] = { 0,0,0 };
+	int saveB[3] = { 0,0,0 };
+
+	for (int i = 0; i < stair_A; i++)
+	{
+		
+		if (saveA[cntA] <= stairA[i])
+		{
+			saveA[cntA] = stairA[i] + tA;
+			cntA++;
+		}
+		else if (saveA[cntA] > stairA[i])
+		{
+			saveA[cntA] = saveA[cntA] + tA;
+			cntA++;
+		}
+		if (cntA == 3) cntA = 0;
+	}
+
+	for (int i = 0; i < stair_B; i++)
+	{
+
+		if (saveB[cntB] <= stairB[i])
+		{
+			saveB[cntB] = stairB[i] + tB;
+			cntB++;
+		}
+		else if (saveB[cntB] > stairB[i])
+		{
+			saveB[cntB] = saveB[cntB] + tB;
+			cntB++;
+		}
+		if (cntB == 3) cntB = 0;
+	}
+	int maxTime = 0;
+
+	for (int i = 0; i < 3; i++)
+	{
+		if (maxTime < saveA[i]) maxTime = saveA[i];
+		if (maxTime < saveB[i]) maxTime = saveB[i];
+	}
+	//cout << " : " << maxTime << endl;
+	if (maxTime < minTime) minTime = maxTime;
+}
+
+void sorting(int a, int b)
+{
+	int tmp;
+	for (int i = 0; i < a-1; i++)
+	{
+		for (int k = i + 1; k < a; k++)
+		{
+			if (stairA[i] > stairA[k])
+			{
+				tmp = stairA[i];
+				stairA[i] = stairA[k];
+				stairA[k] = tmp;
+			}
+		}
+	}
+
+	for (int i = 0; i < b-1 ; i++)
+	{
+		for (int k = i + 1; k < b; k++)
+		{
+			if (stairB[i] > stairB[k])
+			{
+				tmp = stairB[i];
+				stairB[i] = stairB[k];
+				stairB[k] = tmp;
+			}
+		}
+	}
+}
+
+int jul(int a, int b)
+{
+	int tmp = a - b;
+	if (tmp > 0) return tmp;
+	else return -tmp;
+}
