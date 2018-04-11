@@ -1,0 +1,85 @@
+#include <iostream>
+
+using namespace std;
+
+int cube[4][3];
+int map[21][21];
+int order[1001];
+int dy[] = {0, 0,0,-1,1 };
+int dx[] = {0, 1,-1,0,0 };
+
+void cuberot(int idx);
+
+int main()
+{
+
+	int N, M, xx, yy, K;
+	cin >> N >> M>>yy>>xx>>K;
+	for (int i = 0; i < N; i++)
+		for (int k = 0; k < M; k++)
+			cin >> map[i][k];
+	for (int i = 0; i < K; i++)
+		cin >> order[i];
+
+	int idx = 0;
+	while (idx < K)
+	{
+		int cy = yy + dy[order[idx]];
+		int cx = xx + dx[order[idx]];
+		if (cy >= N || cx >= M || cy < 0 || cx < 0) {
+			idx++;
+			continue;
+		}
+		cuberot(order[idx]);
+		if (map[cy][cx] == 0)
+		{	
+			map[cy][cx] = cube[3][1];
+		}
+		else
+		{
+			cube[3][1] = map[cy][cx];
+			map[cy][cx] = 0;
+		}
+		cout << cube[1][1] << endl;
+		yy = cy; xx = cx;
+		idx++;
+	}
+    return 0;
+}
+
+void cuberot(int idx)
+{
+	int tmp;
+	if (idx == 1)
+	{
+		tmp = cube[1][1];
+		cube[1][1] = cube[1][0];
+		cube[1][0] = cube[3][1];
+		cube[3][1] = cube[1][2];
+		cube[1][2] = tmp;
+	}
+	if (idx == 2)
+	{
+		tmp = cube[1][1];
+		cube[1][1] = cube[1][2];
+		cube[1][2] = cube[3][1];
+		cube[3][1] = cube[1][0];
+		cube[1][0] = tmp;
+	}
+	if (idx == 3)
+	{
+		tmp = cube[1][1];
+		cube[1][1] = cube[2][1];
+		cube[2][1] = cube[3][1];
+		cube[3][1] = cube[0][1];
+		cube[0][1] = tmp;
+	}
+	if (idx == 4)
+	{
+		tmp = cube[1][1];
+		cube[1][1] = cube[0][1];
+		cube[0][1] = cube[3][1];
+		cube[3][1] = cube[2][1];
+		cube[2][1] = tmp;
+	}
+}
