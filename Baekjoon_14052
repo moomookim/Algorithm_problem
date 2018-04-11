@@ -1,0 +1,105 @@
+#include <iostream>
+
+using namespace std;
+
+int map[9][9];
+bool vv[9][9][9][9][9][9];
+int mapmap[9][9];
+bool visit[9][9];
+
+int N, M;
+int dy[] = { -1,1,0,0 };
+int dx[] = { 0,0,-1,1 };
+void first();
+int virus();
+void DFS(int y, int x);
+int main()
+{
+	cin >> N >> M;
+	for (int i = 0; i < N; i++)
+		for (int k = 0; k < M; k++)
+			cin >> mapmap[i][k];
+
+	int tmp = 0;
+	int max = 0;
+	for (int ai = 0; ai < N; ai++) {
+		for (int ak = 0; ak < M; ak++) {
+			for (int bi = 0; bi < N; bi++) {
+				for (int bk = 0; bk < M; bk++) {
+					for (int ci = 0; ci < N; ci++) {
+						for (int ck = 0; ck < M; ck++) {
+							if (ai == bi && ak == bk) continue;
+							if (ai == ci&&ak == ck)continue;
+							if (bi == ci&&bk == ck) continue;
+							//cout << ai << " " << ak << " " << bi << " " << bk << " " << ci << " " << ck << endl;
+							if (mapmap[ai][ak] == 0 && mapmap[bi][bk] == 0 && mapmap[ci][ck] == 0)
+							{
+								if (vv[ai][ak][bi][bk][ci][ck] == true) continue;
+								vv[ai][ak][bi][bk][ci][ck] = true;
+								vv[bi][bk][ci][ck][ai][ak] = true;
+								vv[ci][ck][ai][ak][bi][bk] = true;
+
+								//cout << ai << " " << ak << " " << bi << " " << bk << " " << ci << " " << ck << endl;
+								first();
+								map[ai][ak] = map[bi][bk] = map[ci][ck] = 1;
+								tmp = virus();
+								if (max < tmp)max = tmp;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+
+	cout << max << endl;
+	return 0;
+}
+
+int virus()
+{
+	for (int i = 0; i < N; i++)
+		for (int k = 0; k < M; k++)
+			if (map[i][k] == 2 && visit[i][k]==false)
+			{
+				visit[i][k] = true;
+				DFS(i, k);
+			}
+
+	int cnt = 0;
+
+	for (int i = 0; i < N; i++)
+		for (int k = 0; k < M; k++)
+			if (map[i][k] == 0)
+			{
+				cnt++;
+			}
+
+	return cnt;
+}
+
+void DFS(int yy, int xx)
+{
+	int cy, cx;
+	for (int i = 0; i < 4; i++)
+	{
+		cy = yy + dy[i]; cx = xx + dx[i];
+		if (cy >= N || cy < 0 || cx >= M || cx < 0) continue;
+		if (map[cy][cx] == 0 && visit[cy][cx] == false)
+		{
+			map[cy][cx] = 2;
+			visit[cy][cx] = true;
+			DFS(cy, cx);
+		}
+	}
+}
+
+void first()
+{
+	for (int i = 0; i < N; i++)
+		for (int k = 0; k < M; k++) {
+			map[i][k] = mapmap[i][k];
+			visit[i][k] = false;
+		}
+}
