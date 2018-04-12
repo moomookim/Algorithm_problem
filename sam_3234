@@ -1,0 +1,65 @@
+#include <iostream>
+#include <math.h>
+
+using namespace std;
+
+int ch[10];
+bool visit[10];
+
+int cnt;
+int N;
+
+void dfs(int len, int right, int left, int n);
+
+
+int main()
+{
+	int tc = 0, T;
+	cin >> T;
+
+	while (tc < T)
+	{
+		cin >> N;
+		int full = 0;
+		for (int i = 0; i < N; i++){
+			cin >> ch[i];
+			visit[i]=false;
+			full = full + ch[i];
+		}
+		cnt = 0;
+		dfs(0, 0, 0,full);
+		
+		cout << "#" << tc + 1 << " " << cnt << endl;
+		tc++;
+	}
+    return 0;
+}
+
+void dfs(int len, int right, int left,int n)
+{
+	if (left >= right + n) 
+	{
+		int pib = 1;
+		for (int i = 1; i <= N - len; i++)
+			pib = pib*i;
+		cnt = cnt + pow(2, N - len)*pib;
+		return;
+	}
+	if (right > left) return;
+	if (len == N)
+	{
+		cnt++;
+		return;
+	}
+
+	for (int i = 0; i < N; i++)
+	{
+		if (visit[i] == false)
+		{
+			visit[i] = true;
+			dfs(len + 1, right + ch[i], left,n-ch[i]);
+			dfs(len + 1, right, left + ch[i],n-ch[i]);
+			visit[i] = false;
+		}
+	}
+}
