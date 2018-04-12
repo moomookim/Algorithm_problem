@@ -1,0 +1,75 @@
+#include <iostream>
+
+using namespace std;
+
+int map[10001];
+int ans[10001];
+int visit[100001];
+
+int N;
+
+int main()
+{
+	int tc = 0, T;
+	cin >> T;
+	while (tc < T)
+	{
+
+		cin >> N;
+		int tmp;
+		for (int i = 0; i < 100000; i++)
+			visit[i] = 0;
+		int maxt = 0;
+		for (int i = 0; i < N; i++)
+		{
+			cin >> tmp;
+			visit[tmp]++;
+			if (maxt < tmp) maxt = tmp;
+		}
+		int idx = 0;
+		tmp = 0;
+		while (idx <= maxt)
+		{
+			//cout << tmp << " " << idx << endl;
+			if (visit[idx] != 0) {
+				map[tmp] = idx;
+				visit[idx]--;
+				tmp++;
+				continue;
+			}
+			else {
+				idx++;
+			}
+		}
+
+		idx = 0;
+	
+		if (N % 2 == 0)
+		{
+			for (int i = 0; i < N / 2; i++)
+			{
+				ans[i] = map[idx++];
+				ans[N - 1 - i] = map[idx++];
+			}
+		}
+		else
+		{
+			for (int i = 0; i < N / 2; i++)
+			{
+				ans[i] = map[idx++];
+				ans[N - 1 - i] = map[idx++];
+			}
+			ans[N / 2] = map[idx];
+		}
+
+		int max = ans[N-1]-ans[0];
+		for (int i = 0; i < N-1 ; i++)
+		{
+			if (max < ans[i + 1] - ans[i])max = ans[i + 1] - ans[i];
+			if (max < ans[i] - ans[i+1])max = ans[i] - ans[i+1];
+		}
+		cout << "#" << tc + 1 << " " << max << endl;
+		tc++;
+	}
+    return 0;
+}
