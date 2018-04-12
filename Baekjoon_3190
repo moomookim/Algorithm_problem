@@ -1,0 +1,101 @@
+#include <iostream>
+
+using namespace std;
+
+struct SNAKE {
+	int y; int x;
+};
+
+int map[101][101];
+int N,K,L;
+bool apple[101][101];
+int odint[101];
+char odchar[101];
+
+SNAKE snake[101 * 101];
+
+int dy[] = { -1,0,1,0 };
+int dx[] = { 0,1,0,-1 };
+int main()
+{
+	cin >> N >> K;
+	int ay, ax;
+	for (int i = 0; i < K; i++)
+	{
+		cin >> ay >> ax;
+		ay--;
+		ax--;
+		apple[ay][ax] = true;
+	}
+	cin >> L;
+	for (int i = 0; i < L; i++)
+		cin >> odint[i] >> odchar[i];
+
+	int dir = 1;
+	int idx = 0;
+	int time  = 0;
+	int head = 0, tail = 0;
+	int curr_y = 0, curr_x = 0;
+	int next_y = 0, next_x = 0;
+	snake[0].y = 0;
+	snake[0].x = 0;
+
+	while (1)
+	{
+		if (idx < L) {
+			if (time == odint[idx])
+			{
+				if (odchar[idx] == 'L')
+				{
+					dir--;
+					if (dir == -1) dir = 3;
+				}
+				if (odchar[idx] == 'D')
+				{
+					dir++;
+					if (dir == 4)dir = 0;
+				}
+				idx++;
+			}
+		}
+		
+		next_y = snake[head].y + dy[dir];
+		next_x = snake[head].x + dx[dir];
+
+		int chk = false;
+		for (int i = tail; i <= head; i++)
+		{
+			if (snake[i].y == next_y && snake[i].x == next_x) chk = true;
+		}
+		if (next_y >= N || next_x >= N || next_y < 0 || next_x < 0) {
+			break;
+		}
+		if (chk == true) {
+			break;
+		}
+
+		if (apple[next_y][next_x] == true)
+		{
+			head++;
+			if (head >= 101 * 101) head = 0;
+			snake[head].y = next_y;
+			snake[head].x = next_x;
+			apple[next_y][next_x] = false;
+			
+			
+		}
+		else
+		{
+			head++;
+			if (head >= 101 * 101) head = 0;
+			snake[head].y = next_y;
+			snake[head].x = next_x;
+			tail++;
+			if (tail >= 101 * 101) tail = 0;
+		}
+		time++;
+	}
+	cout << time+1 << endl;
+    return 0;
+}
+
