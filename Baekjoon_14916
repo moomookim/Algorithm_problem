@@ -1,0 +1,25 @@
+#include <iostream>
+
+using namespace std;
+
+int main()
+{
+	int coin;
+	int a, b;
+	cin >> coin;
+	int left = coin % 5;
+
+	if (left % 2 == 0)
+	{
+		a = coin / 5;
+		b = (coin - a * 5) / 2;
+	}
+	else
+	{
+		a = coin / 5 - 1;
+		b = (coin - a * 5) / 2;
+	}
+	cout << a + b << endl;
+    return 0;
+}
+
