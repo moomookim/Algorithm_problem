@@ -1,0 +1,33 @@
+#include <iostream>
+
+using namespace std;
+
+int m[100001][10];
+
+
+int main()
+{
+	int N, K;
+	cin >> N >> K;
+
+	int tmp,a,b;
+	for (int i = 1; i <= N; i++)
+	{
+		for (int k = 0; k <= 9; k++)
+		{
+			m[i][k] = m[i - 1][k];
+		}
+		tmp = i;
+		while (tmp > 0)
+		{
+			a = tmp % 10;
+			m[i][a]++;
+			tmp = tmp / 10;
+		}
+	}
+
+	cout << m[N][K] << endl;
+
+    return 0;
+}
+
