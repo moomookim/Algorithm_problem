@@ -1,0 +1,102 @@
+#include<iostream>
+
+using namespace std;
+
+char c[1001][3];
+bool chk[1001][2];
+int num[1001];
+
+int main()
+{
+	int tc = 0, T;
+	cin >> T;
+	while (tc < T)
+	{
+		int ans = 0;
+		int N;
+		cin >> N;
+
+		for (int i = 0; i < N; i++)
+		{
+			cin >> c[i][0] >> c[i][1] >> c[i][2];
+			chk[i][0] = chk[i][1] = false;
+			num[i] = 0;
+		}
+
+		for (int i = 0; i < N; i++)
+		{
+			if (c[i][0] == '*' && c[i][1] == '*' && c[i][2] == '*')
+			{
+				num[i] = 0;
+				chk[i][1] = true; chk[i][0] = true;
+				continue;
+			}
+			if (c[i][0] != '*' && c[i][1] != '*' && c[i][2] != '*')
+			{
+				num[i] = num[i] + c[i][0] - '0';
+				num[i] = num[i] + c[i][1] - '0';
+				num[i] = num[i] + c[i][2] - '0';
+				continue;
+			}
+			if (c[i][0] != '*' && c[i][1] == '*' && c[i][2] != '*')
+			{
+				if (c[i][0] < c[i][2])
+				{
+					num[i] = c[i][2] - '0';
+					chk[i][0] = true;
+				}
+				else
+				{
+					num[i] = c[i][0] - '0';
+					chk[i][1] = true;
+				}
+				continue;
+			}
+			if (c[i][0] == '*' && c[i][2] == '*')
+			{
+				if (c[i][1] == '*') continue;
+				num[i] = c[i][1] - '0';
+				if (ans < num[i]) ans = num[i];
+				num[i] = 0;
+				chk[i][0] = chk[i][1] = true;
+				continue;
+			}
+			if (c[i][0] == '*' && c[i][2] != '*')
+			{
+				if (c[i][1] != '*') num[i] = num[i] + c[i][1] - '0';
+				num[i] = num[i] + c[i][2] - '0';
+				chk[i][0] = true;
+			}
+			if (c[i][0] != '*' && c[i][2] == '*')
+			{
+
+				if (c[i][1] != '*') num[i] = num[i] + c[i][1] - '0';
+				num[i] = num[i] + c[i][0] - '0';
+				chk[i][1] = true;
+			}
+		}
+		int tmp = 0;
+		int first = 0;
+		int last = 0;
+
+		for (int i = 0; i < N; i++)
+		{
+			if (chk[i][0] == false && chk[i][1] == false)
+			{
+				tmp = tmp + num[i];
+			}
+			if (chk[i][0] == false && chk[i][1] == true)
+			{
+				if (num[i] > first) first = num[i];
+			}
+			if (chk[i][0] == true && chk[i][1] == false)
+			{
+				if (num[i] > last) last = num[i];
+			}
+		}
+		if (ans < first + tmp + last) ans = first + tmp + last;
+		cout << "#" << tc + 1<<" " << ans << endl;
+		tc++;
+	}
+    return 0;
+}
