@@ -1,0 +1,113 @@
+#include <iostream>
+
+using namespace std;
+
+char map[51][51];
+
+int dy[] = { -1,1,0,0 };
+int dx[] = { 0,0,-1,1 };
+int N;
+
+char candy[] = { 'C','P','Z','Y' };
+int maxcandy;
+
+void change(int y, int x, int dir);
+int chk(int y, int x, char a);
+
+int main()
+{
+	
+	cin >> N;
+	for (int i = 0; i < N; i++)
+		for (int k = 0; k < N; k++)
+			cin >> map[i][k];
+
+	maxcandy = 0;
+	for (int i = 0; i < N; i++) {
+		for (int k = 0; k < N; k++) {
+			for (int m = 0; m < 4; m++) {
+				//cout <<"*"<< i << " " << k << " " << m << " : "<<endl;
+				change(i, k, m);
+			}
+		}
+	}
+	cout << maxcandy+1 << endl;
+    return 0;
+}
+
+void change(int y, int x, int dir)
+{
+	int ny = y + dy[dir];
+	int nx = x + dx[dir];
+
+	if (ny < 0 || nx < 0 || ny >= N || nx >= N) {
+		return;
+	}
+
+	int bef = chk(y, x, map[y][x]);
+	int aft = chk(ny, nx, map[ny][nx]);
+	if (maxcandy < bef) maxcandy = bef;
+	if (maxcandy < aft) maxcandy = aft;
+
+	char a = map[ny][nx];
+	char b = map[y][x];
+	
+	map[y][x] = a;
+	map[ny][nx] = b;
+
+	bef = chk(y, x, map[y][x]);
+	aft = chk(ny, nx, map[ny][nx]);
+	if (maxcandy < bef) maxcandy = bef;
+	if (maxcandy < aft) maxcandy = aft;
+
+	map[y][x] = b;
+	map[ny][nx] = a;
+	return;
+}
+
+int chk(int y, int x, char a)
+{
+	int py = y+1; int px = x+1;
+	int my = y-1; int mx = x-1;
+	int cnty = 0, cntx = 0;
+	
+
+	while (1)
+	{
+		if (map[py][x] != a) break;
+		if (py >= N) break;
+		cnty++;
+		py++;
+		
+	}
+
+	while (1)
+	{
+		if (map[my][x] != a) break;
+		if (my <0) break;
+		cnty++;
+		my--;
+		
+	}
+
+	while (1)
+	{
+		if (map[y][px] != a) break;
+		if (px >= N) break;
+		cntx++;
+		px++;
+		
+	}
+
+	while (1)
+	{
+		if (map[y][mx] != a) break;
+		if (mx <0) break;
+		cntx++;
+		mx--;
+	}
+
+	//cout << cnty << " " << cntx << endl;
+	if (cntx > cnty) return cntx;
+	else return cnty;
+}
