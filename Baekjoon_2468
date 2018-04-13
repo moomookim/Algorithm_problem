@@ -1,0 +1,66 @@
+#include <iostream>
+
+using namespace std;
+
+int map[101][101];
+int visit[101][101];
+
+int N;
+
+int dy[] = { -1,1,0,0 };
+int dx[] = { 0,0,1,-1 };
+
+void dfs(int y, int x, int idx, int limit);
+
+int main()
+{
+	cin >> N;
+	int max = 0;
+	for (int i = 0; i < N; i++) {
+		for (int k = 0; k < N; k++) {
+			cin >> map[i][k];
+			if (map[i][k]>max) max = map[i][k];
+		}
+	}
+	int idx = 0;
+	int maxidx = 1;
+	for (int m = 2; m <= max; m++)
+	{
+		idx = 1;
+		for (int i = 0; i < N; i++) {
+			for (int k = 0; k < N; k++) {
+				if (visit[i][k] == 0 && map[i][k]>=m)
+				{
+					dfs(i, k, idx, m);
+					idx++;
+				}
+			}
+		}
+		idx--;
+		if (idx > maxidx) maxidx = idx;
+		
+		for (int i = 0; i < N; i++) {
+			for (int k = 0; k < N; k++) {
+				visit[i][k] = 0;
+			}
+		}
+	}
+
+	cout << maxidx << endl;
+    return 0;
+}
+
+void dfs(int y, int x, int idx, int limit)
+{
+	int cy, cx;
+	if (map[y][x] < limit) return;
+	if (visit[y][x] != 0) return;
+	visit[y][x] = idx;
+	for (int i = 0; i < 4; i++)
+	{
+		cy = y + dy[i];
+		cx = x + dx[i];
+		if (cy >= N || cx >= N || cx < 0 || cy < 0) continue;
+		dfs(cy, cx, idx, limit);
+	}
+}
