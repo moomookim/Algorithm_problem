@@ -1,0 +1,52 @@
+#include <iostream>
+
+using namespace std;
+bool s[101][101];
+bool v[101];
+bool visit[101];
+int t, c;
+
+void dfs(int idx);
+
+int main()
+{
+	cin >> c >> t;
+	int a, b;
+	v[1] = true;
+	for (int i = 0; i < t; i++)
+	{
+		cin >> a >> b;
+		s[a][b] = true;
+		s[b][a] = true;
+		if (v[a] == true || v[b] == true)
+		{
+			v[a] = v[b] = true;
+		}
+	}
+
+	int cnt = 0;
+	dfs(1);
+	for (int i = 2; i <= c; i++) {
+		if(v[i]==true)cnt++;
+	}
+
+	cout << cnt<<endl;
+    return 0;
+}
+
+void dfs(int idx)
+{
+
+	for (int i = 1; i <= c; i++)
+	{
+		if (s[idx][i] == true)
+		{
+
+			if (visit[i] == true) continue;
+			visit[i] = true;
+			v[i] = true;
+			dfs(i);
+		}
+	}
+}
+
