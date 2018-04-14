@@ -1,0 +1,110 @@
+#include <iostream>
+
+using namespace std;
+
+int map[101][101];
+int visit[101][101];
+int save[101 * 101];
+
+int N, M, K, idx;
+
+int dy[] = {-1,1,0,0};
+int dx[] = { 0,0,1,-1 };
+
+void flood(int a, int b, int c, int d)
+{
+	for (int i = b; i < d; i++)
+	{	
+		for (int k = a; k < c; k++)
+		{
+			map[i][k] = 1;
+		}
+	}
+}
+
+void dfs(int y, int x, int idx)
+{
+	visit[y][x] = idx;
+	for (int i = 0; i < 4; i++)
+	{
+		int cy = y + dy[i];
+		int cx = x + dx[i];
+		if (cy < 0 || cx < 0 || cx >= M || cy >= N) continue;
+		if (map[cy][cx] == 0 && visit[cy][cx] == 0)
+		{
+			visit[cy][cx] = idx;
+			dfs(cy, cx, idx);
+		}
+		
+	}
+}
+
+void sort()
+{
+	int tmp;
+	for (int i = 0; i < idx-1; i++)
+	{
+		for (int k = i + 1; k < idx; k++)
+		{
+			if (save[i] > save[k])
+			{
+				tmp = save[i];
+				save[i] = save[k];
+				save[k] = tmp;
+			}
+		}
+	}
+}
+
+int main()
+{
+	cin >> N >> M >> K;
+	int a,b,c,d;
+	for (int i = 0; i < K; i++)
+	{
+		cin >> a >> b>>c>>d;
+		flood(a, b, c, d );
+	}
+
+	idx = 1;
+	for (int i = 0; i < N; i++)
+	{
+		for (int k = 0; k < M; k++)
+		{
+			if (map[i][k] == 0 && visit[i][k]==0)
+			{
+				dfs(i, k, idx);
+				idx++;
+			}
+		}
+	}
+	
+	int cnt = 0, pnt = 0;
+	for (int m = 1; m < idx; m++)
+	{
+		cnt = 0;
+		for (int i = 0; i < N; i++)
+		{
+			for (int k = 0; k < M; k++)
+			{
+				if (visit[i][k] == m)
+				{
+					cnt++;
+				}
+			}
+		}
+		save[pnt] = cnt;
+		pnt++;
+	}
+
+	sort();
+	cout << idx - 1 << endl;
+	for (int i = 0; i < idx; i++)
+	{
+		if (save[i] == 0) continue;
+		cout << save[i] << " ";
+	}
+	cout << endl;
+    return 0;
+}
+
