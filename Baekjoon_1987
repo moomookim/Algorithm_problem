@@ -1,0 +1,47 @@
+#include <iostream>
+
+using namespace std;
+
+char map[21][21];
+bool visit[26];
+
+int dy[] = { -1,1,0,0 };
+int dx[] = { 0,0,-1,1 };
+int maxcnt;
+int R, C;
+
+void dfs(int y, int x, int cnt);
+
+int main()
+{
+	cin >> R >> C;
+	for (int i = 0; i < R; i++)
+		for (int k = 0; k < C; k++)
+			cin >> map[i][k];
+
+	visit[map[0][0] - 'A'] = true;
+	
+	dfs(0, 0, 1);
+	cout << maxcnt << endl;
+
+    return 0;
+}
+
+void dfs(int y, int x, int cnt)
+{
+	int cy, cx;
+	if (maxcnt < cnt) {
+		//cout << cnt << endl;
+		maxcnt = cnt;
+	}
+	for (int i = 0; i < 4; i++)
+	{
+		cy = y + dy[i];
+		cx = x + dx[i];
+		if (cy < 0 || cx < 0 || cy >= R || cx >= C) continue;
+		if (visit[map[cy][cx] - 'A'] == true) continue;
+		visit[map[cy][cx] - 'A'] = true;
+		dfs(cy, cx, cnt+1);
+		visit[map[cy][cx] - 'A'] = false;
+	}
+}
