@@ -1,0 +1,203 @@
+
+#include "stdafx.h"
+#include <iostream>
+#include <string.h>
+#include <memory>
+
+using namespace std;
+
+typedef struct ListNodeType
+{
+	int data;
+	struct ListNodeType* pLink;
+}ListNode;
+
+typedef struct LinkedListType
+{
+	int currentElementCount;
+	ListNode headerNode;
+}LinkedList;
+
+int getLinkedListLength(LinkedList* pList);
+void clearLinkedList(LinkedList* pList);
+LinkedList* createLinkedList();
+int addLLElement(LinkedList* pList, int position, ListNode element);
+int removeLLElement(LinkedList* pList, int position);
+ListNode* getLLElement(LinkedList* pList, int position);
+void displayLinkedList(LinkedList* pList);
+int isEmpty(LinkedList* pList);
+void deleteLinkedList(LinkedList* pList);
+
+LinkedList* createLinkedList()
+{
+	LinkedList *pReturn = NULL;;
+
+	pReturn = (LinkedList *)malloc(sizeof(LinkedList));
+	if (pReturn != NULL)
+	{
+		memset(pReturn, 0, sizeof(LinkedList));
+	}
+	else
+	{
+		cout << "메모리 할당 오류" << endl;
+		return NULL;
+	}
+	return pReturn;
+}
+
+int addLLElement(LinkedList* pList, int position, ListNode element)
+{
+	int ret = 0;
+	int i = 0;
+	ListNode* pPreNode = NULL;
+	ListNode* pNewNode = NULL;
+	if (pList != NULL)
+	{
+		if (position >= 0 && position <= pList->currentElementCount)
+		{
+			pNewNode = (ListNode*)malloc(sizeof(ListNode));
+			if (pNewNode != NULL)
+			{
+				*pNewNode = element;
+				pNewNode->pLink = NULL;
+				pPreNode = &(pList->headerNode);
+				for (i = 0; i < position; i++) pPreNode = pPreNode->pLink;
+				pNewNode->pLink = pPreNode->pLink;
+				pPreNode->pLink = pNewNode;
+
+				pList->currentElementCount++;
+				ret = true;
+			}
+			else
+			{
+				cout << "메모리 할당 오류" << endl;
+			}
+		}
+		else {
+			cout << "위치 인덱스 오류" << endl;
+		}
+	}
+	return ret;
+}
+
+int removeLLElement(LinkedList* pList, int position)
+{
+	int ret = false;
+	int i = 0;
+	int arrayCount = 0;
+	ListNode* pNode = NULL;
+	ListNode* pDelNode = NULL;
+	if (pList != NULL)
+	{
+		arrayCount = getLinkedListLength(pList);
+		if (position >= 0 && position < arrayCount)
+		{
+			pNode = &(pList->headerNode);
+			for (i = 0; i < position; i++)pNode = pNode->pLink;
+			pDelNode = pNode->pLink;
+			pNode->pLink = pDelNode->pLink;
+			free(pDelNode);
+			pList->currentElementCount--;
+			ret = true;
+		}
+		else {
+			cout << "딜리트 어레이 위치인덱스 오류" << endl;
+		}
+	}
+	return ret;
+}
+
+ListNode* getLLElement(LinkedList* pList, int position)
+{
+	ListNode* pReturn = NULL;
+	int i = 0;
+	ListNode* pNode = NULL;
+	if (pList != NULL)
+	{
+		if (position >= 0 && position < pList->currentElementCount)
+		{
+			pNode = &(pList->headerNode);
+			for (i = 0; i <= position; i++) pNode = pNode->pLink;
+			pReturn = pNode;
+		}
+	}
+	return pReturn;
+}
+
+void deleteLinkedList(LinkedList* pList)
+{
+	int i = 0;
+	if (pList != NULL)
+	{
+		clearLinkedList(pList);
+		free(pList);
+	}
+}
+
+void clearLinkedList(LinkedList* pList)
+{
+	if (pList != NULL)
+	{
+		if (pList->currentElementCount > 0)
+		{
+			removeLLElement(pList, 0);
+		}
+	}
+}
+
+int getLinkedListLength(LinkedList* pList)
+{
+	int ret = 0;
+	if (pList != NULL) ret = pList->currentElementCount;
+	return ret;
+}
+
+int isEmpty(LinkedList* pList)
+{
+	int ret = false;
+	if (pList != NULL)
+	{
+		if (pList->currentElementCount == 0) ret = true;
+	}
+	return ret;
+}
+
+void displayLinkedList(LinkedList* pList)
+{
+	int i = 0;
+	if (pList != NULL)
+	{
+		cout << "현재 원소 갯수 : " << pList->currentElementCount << endl;
+		for (int i = 0; i < pList->currentElementCount; i++) cout <<i<<" - "<< getLLElement(pList, i)->data << endl;
+	}
+	else
+	{
+		cout << "원소가 없습니다" << endl;
+	}
+}
+
+int main()
+{
+	int i = 0, arrayCount = 0;
+	LinkedList *pList = NULL;
+	ListNode* pNode = NULL;
+	ListNode node;
+
+	pList = createLinkedList();
+	if (pList != NULL)
+	{
+		node.data = 1;
+		addLLElement(pList, 0, node);
+		node.data = 3;
+		addLLElement(pList, 1, node);
+		node.data = 5;
+		addLLElement(pList, 2, node);
+		displayLinkedList(pList);
+
+		removeLLElement(pList, 0);
+		displayLinkedList(pList);
+		deleteLinkedList(pList);
+	}
+    return 0;
+}
+
