@@ -1,0 +1,173 @@
+#include "stdafx.h"
+#include <iostream>
+
+using namespace std;
+
+typedef struct DLNT
+{
+	int data;
+	struct DLNT* pLLink;
+	struct DLNT* pRLink;
+}DoublyListNode;
+
+typedef struct DoublyListType
+{
+	int currentElementCount;
+	DoublyListNode headerNode;
+}DoublyList;
+
+int getDoublyListLength(DoublyList* pList);
+void clearDoublyList(DoublyList* pList);
+void deleteDoublyList(DoublyList* pList);
+void displayDoublyList(DoublyList* pList);
+DoublyListNode * getDLElement(DoublyList* pList, int position);
+int removeDLElement(DoublyList* pList, int position);
+int addDLElement(DoublyList *pList, int position, DoublyListNode element);
+DoublyList* createDoublyList();
+int getDoublyListLength(DoublyList* pList);
+
+DoublyList* createDoublyList()
+{
+	DoublyList* pReturn = NULL;
+	int i = 0;
+	pReturn = (DoublyList *)malloc(sizeof(DoublyList));
+	if (pReturn != NULL)
+	{
+		memset(pReturn, 0, sizeof(DoublyList));
+		pReturn->headerNode.pLLink = &(pReturn->headerNode);
+		pReturn->headerNode.pRLink = &(pReturn->headerNode);
+	}
+	else
+	{
+		cout << "오류 메모리할당" << endl;
+		return NULL;
+	}
+	return pReturn;
+}
+
+int addDLElement(DoublyList *pList, int position, DoublyListNode element)
+{
+	int ret = false, i = 0;
+	DoublyListNode *pPreNode = NULL, *pNewNode = NULL, *pTempNode = NULL;
+	if (pList != NULL)
+	{
+		if (position >= 0 && position <= pList->currentElementCount)
+		{
+			pNewNode = (DoublyListNode*)malloc(sizeof(DoublyListNode));
+			if (pNewNode == NULL)
+			{
+				cout << "memory melloc error" << endl;
+				return ret;
+			}
+			*pNewNode = element;
+			pNewNode->pLLink = NULL;
+			pNewNode->pRLink = NULL;
+
+			pPreNode = &(pList->headerNode);
+			for (i = 0; i < position; i++)pPreNode = pPreNode->pRLink;
+
+			pNewNode->pLLink = pPreNode;
+			pNewNode->pRLink = pPreNode->pRLink;
+			pPreNode->pRLink = pNewNode;
+			pNewNode->pRLink->pLLink = pNewNode;
+
+			pList->currentElementCount++;
+			ret = true;
+		}
+		else {
+			cout << "위치 인덱수 오류" << endl;
+		}
+	}
+	return ret;
+}
+
+int removeDLElement(DoublyList* pList, int position)
+{
+	int ret = false;
+	int i = 0, arrayCount = 0;
+	DoublyListNode *pPreNode = NULL, *pDelNode = NULL, *pTempNode = NULL;
+
+	if (pList != NULL)
+	{
+		arrayCount = getDoublyListLength(pList);
+		if (position >= 0 && position < arrayCount)
+		{
+			pPreNode = &(pList->headerNode);
+			for (i = 0; i < position; i++) pPreNode = pPreNode->pRLink;
+			pDelNode = pPreNode->pRLink;
+
+			pPreNode->pRLink = pDelNode->pRLink;
+			pDelNode->pRLink->pLLink = pPreNode;
+			free(pDelNode);
+
+			pList->currentElementCount--;
+			ret = true;
+		}
+		else
+		{
+			cout << "위치 인덱스 오류" << endl;
+		}
+	}
+	return ret;
+}
+
+DoublyListNode * getDLElement(DoublyList* pList, int position)
+{
+	DoublyListNode *pReturn = NULL;
+	int i = 0;
+	DoublyListNode* pNode = NULL;
+	if (pList != NULL)
+	{
+		if (position >= 0 && position < pList->currentElementCount)
+		{
+			pNode = pList->headerNode.pRLink;
+			for (int i = 0; i < position; i++) pNode = pNode->pRLink;
+			pReturn = pNode;
+		}
+		else
+		{
+			cout << "위치 인덱스 오류" << endl;
+		}
+	}
+	return pReturn;
+}
+
+void displayDoublyList(DoublyList* pList)
+{
+	int i = 0;
+	if (pList != NULL)
+	{
+		cout << "현재 노드 갯수 : " << pList->currentElementCount << endl;
+		for (i = 0; i < pList->currentElementCount; i++) cout << "[" << i << "]" << "   " << getDLElement(pList, i)->data;
+	}
+	else
+	{
+		cout << "원소가 없습니다" << endl;
+	}
+}
+
+void deleteDoublyList(DoublyList* pList)
+{
+	if (pList != NULL) {
+		clearDoublyList(pList);
+		free(pList);
+	}
+}
+
+void clearDoublyList(DoublyList* pList)
+{
+	if (pList != NULL)
+	{
+		while (pList->currentElementCount > 0) removeDLElement(pList, 0);
+	}
+}
+
+int getDoublyListLength(DoublyList* pList)
+{
+	int ret = 0;
+	if (pList != NULL)
+	{
+		ret = pList->currentElementCount;
+	}
+	return ret;
+}
