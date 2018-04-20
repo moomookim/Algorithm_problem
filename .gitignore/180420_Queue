@@ -1,0 +1,106 @@
+// 180420_Queue.cpp : 콘솔 응용 프로그램에 대한 진입점을 정의합니다.
+//
+
+#include "stdafx.h"
+#include <iostream>
+
+using namespace std;
+
+typedef struct QueueType
+{
+	int num;
+}QueueT;
+
+typedef struct QType
+{
+	int currentElementNum;
+	int maxNum;
+	int front;
+	int rear;
+	QueueT* eNum;
+}Queue;
+
+Queue* createQ(int max)
+{
+	Queue* retQ = NULL;
+
+
+	if (max>0)
+	{
+		retQ = (Queue*)malloc(sizeof(Queue));
+		if (retQ != NULL) {
+			retQ->front = -1;
+			retQ->rear = -1;
+			retQ->currentElementNum = 0;
+			retQ->maxNum = max;
+		}
+	}
+	retQ->eNum = (QueueT*)malloc(sizeof(QueueT)*max);
+	if (retQ != NULL) memset(retQ->eNum, 0, sizeof(QueueT)*max);
+	return retQ;
+}
+
+int enQueue(Queue* pQueue, QueueT element)
+{
+	int ret = false;
+	if (pQueue != NULL)
+	{
+		if (pQueue->currentElementNum < pQueue->maxNum)
+		{
+			cout << "push" << endl;
+			pQueue->rear++;
+			pQueue->eNum[pQueue->rear] = element;
+			pQueue->currentElementNum++;
+			ret = true;
+		}
+		else
+		{
+			cout << "Max" << endl;
+		}
+	}
+	else {
+		cout << "error of enQueue pQueue is NULL" << endl;
+	}
+	return ret;
+}
+QueueT* deQueue(Queue *pQueue)
+{
+	QueueT *retQ = NULL;
+	int ret = false;
+	if (pQueue != NULL)
+	{
+		if (pQueue->currentElementNum > 0)
+		{
+			retQ = (QueueT*)malloc(sizeof(QueueT));
+			pQueue->front++;
+			retQ->num = pQueue->eNum[pQueue->front].num;
+			pQueue->currentElementNum--;
+		}
+	}
+	return retQ;
+}
+int main()
+{
+	Queue* Q;
+	QueueT T;
+	Q = createQ(10);
+	T.num = 1;
+	enQueue(Q, T);
+	T.num = 2;
+	enQueue(Q, T);
+	T.num = 3;
+	enQueue(Q, T);
+	T.num = 4;
+	enQueue(Q, T);
+	T.num = 5;
+	enQueue(Q, T);
+	QueueT* TT = NULL;
+	cout << Q->currentElementNum << endl;
+	for (int i = 0; i < Q->currentElementNum; i++)
+	{
+		TT = deQueue(Q);
+		cout << i << " : " << TT->num<< endl;
+	}
+    return 0;
+}
+
