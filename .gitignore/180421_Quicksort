@@ -1,0 +1,57 @@
+// 180421_QuickSort.cpp : 콘솔 응용 프로그램에 대한 진입점을 정의합니다.
+//
+
+#include "stdafx.h"
+#include <iostream>
+
+using namespace std;
+
+int partition(int value[], int start, int end)
+{
+	int tmp;
+	int left = start;
+	int right = end;
+	int pivot = end;
+
+	while (left < right)
+	{
+		while (left < right && (value[left] < value[pivot]))left++;
+		while (left < right && (value[right] >= value[pivot]))right--;
+		if (left < right) {
+			tmp = value[right];
+			value[right] = value[left];
+			value[left] = tmp;
+		}
+	}
+	
+	tmp = value[pivot];
+	value[pivot] = value[right];
+	value[right] = tmp;
+
+
+	return right;
+}
+
+void Quicksort(int value[], int start, int end)
+{
+	if (start < end)
+	{
+		int pivot = partition(value, start, end);
+		Quicksort(value, start, pivot - 1);
+		Quicksort(value, pivot + 1, end);
+	}
+}
+
+int main()
+{
+	int N[10] = { 9,10,4,2,58,29,100,38,22,10 };
+	for (int i = 0; i < 10; i++)
+		cout << N[i] << " ";
+	cout << endl;
+	Quicksort(N, 0, 9);
+	for (int i = 0; i < 10; i++)
+		cout << N[i] << " ";
+	cout << endl;
+    return 0;
+}
+
